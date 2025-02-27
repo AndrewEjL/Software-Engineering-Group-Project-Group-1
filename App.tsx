@@ -1,130 +1,134 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+// Page 1 Component (Your teammate can work on this)
+const Page1Screen = () => {
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
+    <View style={styles.pageContainer}>
+      <Text style={styles.pageTitle}>Page 1</Text>
+      <Text style={styles.pageDescription}>
+        This is Page 1. Your teammate can replace this with their UI components.
       </Text>
     </View>
   );
-}
+};
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  /*
-   * To keep the template simple and small we're adding padding to prevent view
-   * from rendering under the System UI.
-   * For bigger apps the reccomendation is to use `react-native-safe-area-context`:
-   * https://github.com/AppAndFlow/react-native-safe-area-context
-   *
-   * You can read more about it here:
-   * https://github.com/react-native-community/discussions-and-proposals/discussions/827
-   */
-  const safePadding = '5%';
-
+// Page 2 Component (You can work on this)
+const Page2Screen = () => {
   return (
-    <View style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        style={backgroundStyle}>
-        <View style={{paddingRight: safePadding}}>
-          <Header/>
-        </View>
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-            paddingHorizontal: safePadding,
-            paddingBottom: safePadding,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
+    <View style={styles.pageContainer}>
+      <Text style={styles.pageTitle}>Page 2</Text>
+      <Text style={styles.pageDescription}>
+        This is Page 2. You can replace this with your UI components.
+      </Text>
     </View>
   );
-}
+};
 
+// Main Home Screen with Navigation Buttons
+const LoginOptions = ({ navigation }) => {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.header}>E-Waste Management</Text>
+      
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('Login')}
+        >
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('CreateAccount')}
+        >
+          <Text style={styles.buttonText}>Create Account</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
+// Create the navigation stack
+const Stack = createNativeStackNavigator();
+
+// Main App Component with Navigation
+const App = () => {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Login Options">
+        <Stack.Screen 
+          name="Login Options" 
+          component={LoginOptions} 
+          options={{ title: 'Login Options' }}
+        />
+        <Stack.Screen 
+          name="Login" 
+          component={Page1Screen} 
+          options={{ title: 'Login' }}
+        />
+        <Stack.Screen 
+          name="CreateAccount" 
+          component={Page2Screen} 
+          options={{ title: 'Create Account' }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
+
+// Styles
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    flex: 1,
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#f8f9fa',
   },
-  sectionTitle: {
+  header: {
     fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 40,
+    color: '#333',
+  },
+  buttonContainer: {
+    width: '100%',
+    gap: 20,
+  },
+  button: {
+    backgroundColor: '#4263ec',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: 'center',
+    elevation: 3,
+  },
+  buttonText: {
+    color: '#ffffff',
+    fontSize: 16,
     fontWeight: '600',
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  pageContainer: {
+    flex: 1,
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
   },
-  highlight: {
-    fontWeight: '700',
+  pageTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#333',
+  },
+  pageDescription: {
+    fontSize: 16,
+    textAlign: 'center',
+    color: '#666',
   },
 });
 
