@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 // Page 1 Component (Your teammate can work on this)
-const Page1Screen = () => {
+const LoginScreen = () => {
   return (
     <View style={styles.pageContainer}>
       <Text style={styles.pageTitle}>Page 1</Text>
@@ -16,7 +16,7 @@ const Page1Screen = () => {
 };
 
 // Page 2 Component (You can work on this)
-const Page2Screen = () => {
+const RegisterScreen = () => {
   return (
     <View style={styles.pageContainer}>
       <Text style={styles.pageTitle}>Page 2</Text>
@@ -67,12 +67,12 @@ const App = () => {
         />
         <Stack.Screen 
           name="Login" 
-          component={Page1Screen} 
+          component={LoginScreen} 
           options={{ title: 'Login' }}
         />
         <Stack.Screen 
           name="CreateAccount" 
-          component={Page2Screen} 
+          component={RegisterScreen} 
           options={{ title: 'Create Account' }}
         />
       </Stack.Navigator>
