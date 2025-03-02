@@ -2,17 +2,19 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import LoginScreen from './screens/LoginScreen';
 
-// Page 1 Component (Your teammate can work on this)
-const LoginScreen = () => {
-  return (
-    <View style={styles.pageContainer}>
-      <Text style={styles.pageTitle}>Page 1</Text>
-      <Text style={styles.pageDescription}>
-        This is Page 1. Your teammate can replace this with their UI components.
-      </Text>
-    </View>
-  );
+// Define your navigation types
+type RootStackParamList = {
+  'Login Options': undefined;
+  Login: undefined;
+  CreateAccount: undefined;
+};
+
+// Type for navigation prop
+type LoginOptionsProps = {
+  navigation: NativeStackNavigationProp<RootStackParamList, 'Login Options'>;
 };
 
 // Page 2 Component (You can work on this)
@@ -28,7 +30,7 @@ const RegisterScreen = () => {
 };
 
 // Main Home Screen with Navigation Buttons
-const LoginOptions = ({ navigation }) => {
+const LoginOptions = ({ navigation }: LoginOptionsProps) => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>E-Waste Management</Text>
@@ -53,7 +55,7 @@ const LoginOptions = ({ navigation }) => {
 };
 
 // Create the navigation stack
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 // Main App Component with Navigation
 const App = () => {

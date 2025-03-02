@@ -1,15 +1,5 @@
 {
-  "extends": "@react-native/typescript-config/tsconfig.json",
-
-  "compilerOptions": {
-    "jsx": "react-jsx",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "lib": ["es6", "dom"],
-    "moduleResolution": "node",
-    "noEmit": true,
-    "strict": true,
-    "target": "esnext"
-  },
-  "exclude": ["node_modules"]
+  "extends": "@react-native/typescript-config/tsconfig.json"
+  
+  
 }
