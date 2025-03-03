@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import LoginScreen from './screens/LoginScreen';
+import RLoginScreen from './screens/RecipientScreens/RLoginScreen.tsx';
 
 // Define your navigation types
 type RootStackParamList = {
@@ -34,7 +35,7 @@ const LoginOptions = ({ navigation }: LoginOptionsProps) => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>E-Waste Management</Text>
-      
+
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={styles.button}
@@ -42,12 +43,18 @@ const LoginOptions = ({ navigation }: LoginOptionsProps) => {
         >
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
-        
+
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('CreateAccount')}
         >
           <Text style={styles.buttonText}>Create Account</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('RecipientLogin')}
+        >
+          <Text style={styles.buttonText}>Login As Recipient</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -62,20 +69,25 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login Options">
-        <Stack.Screen 
-          name="Login Options" 
-          component={LoginOptions} 
+        <Stack.Screen
+          name="Login Options"
+          component={LoginOptions}
           options={{ title: 'Login Options' }}
         />
-        <Stack.Screen 
-          name="Login" 
-          component={LoginScreen} 
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
           options={{ title: 'Login' }}
         />
-        <Stack.Screen 
-          name="CreateAccount" 
-          component={RegisterScreen} 
+        <Stack.Screen
+          name="CreateAccount"
+          component={RegisterScreen}
           options={{ title: 'Create Account' }}
+        />
+        <Stack.Screen
+          name="RecipientLogin"
+          component={RLoginScreen}
+          options={{ title: 'Login as recipient' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
