@@ -27,7 +27,7 @@ const RLoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Recipient</Text>
+      <Text style={styles.title}>App name-Partner</Text>
       <Dropdown
         style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
         placeholderStyle={styles.placeholderStyle}
@@ -39,14 +39,14 @@ const RLoginScreen = ({ navigation }) => {
         search
         maxHeight={300}
         labelField="name"
-        valueField="od"
+        valueField="id"
         placeholder={!isFocus ? 'Select Your Company' : '...'}
         searchPlaceholder="Search... "
         value={company}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={item => {
-          setCompany(item.value);
+          setCompany(item.id);
           setIsFocus(false);
         }}
       />
@@ -71,11 +71,11 @@ const RLoginScreen = ({ navigation }) => {
         style={styles.input}
       />
 
-      <TouchableOpacity onPress={() => console.log("Forgot Password")}>
+      <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
         <Text style={styles.linkText}>Forgot Password</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => console.log("Create Account")}>
-        <Text style={styles.linkText}>Create a New Account</Text>
+      <TouchableOpacity onPress={() => navigation.navigate("RecipientSelectRole")}>
+        <Text style={styles.linkText}>Sign Up</Text>
       </TouchableOpacity>
 
       <Button mode="contained" onPress={() => console.log("Login")} style={styles.loginButton}>
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "flex-start",
     alignItems: "center",
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#f8f9fa",
     paddingTop: height * 0.01,
   },
   title: {
