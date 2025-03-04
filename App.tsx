@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import LoginScreen from './screens/LoginScreen';
 import RLoginScreen from './screens/RecipientScreens/RLoginScreen.tsx';
+import SignUpScreen from './screens/SignUpScreen';
 
 // Define your navigation types
 type RootStackParamList = {
@@ -88,7 +89,12 @@ const App = () => {
           name="RecipientLogin"
           component={RLoginScreen}
           options={{ title: 'Login as recipient' }}
+          
         />
+        <Stack.Screen 
+          name="Sign Up" 
+          component={SignUpScreen} 
+          />
       </Stack.Navigator>
     </NavigationContainer>
   );

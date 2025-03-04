@@ -11,6 +11,7 @@ const LoginScreen = ({ navigation }) => {
 
   const handleSignUp = () => {
     console.log('Navigate to sign up page');
+    navigation.navigate('Sign Up');
   };
 
   return (
@@ -25,8 +26,6 @@ const LoginScreen = ({ navigation }) => {
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.loginCard}>
-            
-
             <View style={styles.welcomeContainer}>
               <Text style={styles.welcomeText}>Welcome Back!</Text>
               <Text style={styles.subtitleText}>Sign in to your account to continue</Text>
