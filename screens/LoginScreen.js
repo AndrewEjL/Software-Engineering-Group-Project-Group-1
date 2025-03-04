@@ -20,7 +20,6 @@ const LoginScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.loginCard}>
-        <Text style={styles.headerTitle}>Simple Login</Text>
         
         <View style={styles.welcomeContainer}>
           <Text style={styles.welcomeText}>Welcome Back!</Text>
@@ -66,7 +65,7 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000814',
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
   },
