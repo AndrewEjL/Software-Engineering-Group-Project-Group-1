@@ -4,10 +4,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import LoginScreen from './screens/LoginScreen';
+import SelectRegistrationRole from './screens/RecipientScreens/SelectRegistrationRole.tsx';
 import RLoginScreen from './screens/RecipientScreens/RLoginScreen.tsx';
-import RRegistrationScreen1 from './screens/RecipientScreens/RRegistrationScreen1.tsx'
-import RRegistrationScreen2 from './screens/RecipientScreens/RRegistrationScreen2.tsx'
-import RRegistrationScreen3 from './screens/RecipientScreens/RRegistrationScreen3.tsx'
+import OrgRegistrationScreen1 from './screens/RecipientScreens/OrgRegistrationScreen1.tsx';
+import OrgRegistrationScreen2 from './screens/RecipientScreens/OrgRegistrationScreen2.tsx';
+import OrgRegistrationScreen3 from './screens/RecipientScreens/OrgRegistrationScreen3.tsx';
+import EmployeeRegistrationScreen from './screens/RecipientScreens/EmployeeRegistrationScreen.tsx';
+import RequestIC from './screens/RecipientScreens/requestIC.tsx';
 
 // Define your navigation types
 type RootStackParamList = {
@@ -94,18 +97,33 @@ const App = () => {
         />
         <Stack.Screen
           name="RecipientSelectRole"
-          component={RRegistrationScreen1}
+          component={OrgRegistrationScreen1}
           options={{ title: 'Select role' }}
         />
         <Stack.Screen
           name="RecipientSignUp"
-          component={RRegistrationScreen2}
+          component={OrgRegistrationScreen2}
           options={{ title: 'Sign Up' }}
         />
         <Stack.Screen
           name="CompanyInformationRequest"
-          component={RRegistrationScreen3}
+          component={OrgRegistrationScreen3}
           options={{ title: 'Company Information' }}
+        />
+        <Stack.Screen
+          name="SelectRegistrationRole"
+          component={SelectRegistrationRole}
+          options={{ title: 'Select role' }}
+        />
+        <Stack.Screen
+          name="EmployeeRegistration"
+          component={EmployeeRegistrationScreen}
+          options={{ title: 'Register as an employee' }}
+        />
+        <Stack.Screen
+          name="RequestIC"
+          component={RequestIC}
+          options={{ title: 'IC photo' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

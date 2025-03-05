@@ -5,30 +5,30 @@ import ImageButton from "./ImageButton.tsx";
 
 const { width, height } = Dimensions.get("window");
 
-const RRegistrationScreen1 = ({ navigation }) => {
+const SelectRegistrationRole = ({ navigation }) => {
   const [selectedRole, setSelectedRole] = useState(null);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>App Names-Partner</Text>
-      <Text style={styles.subtitle}>Choose the role you want to register as</Text>
+      <Text style={styles.subtitle}>You are ?</Text>
 
       <View style={styles.buttonContainer}>
         <ImageButton
-          imageSource={require("../assets/collector.png")}
-          label="Collector"
-          isSelected={selectedRole === "Collector"}
-          onPress={() => setSelectedRole("Collector")}
+          imageSource={require("../assets/employees.png")}
+          label="Employee"
+          isSelected={selectedRole === "Employee"}
+          onPress={() => setSelectedRole("Employee")}
         />
         <ImageButton
-          imageSource={require("../assets/recycleFacility.png")}
-          label="Recycle Facility"
-          isSelected={selectedRole === "Recycle Facility"}
-          onPress={() => setSelectedRole("Recycle Facility")}
+          imageSource={require("../assets/admin.png")}
+          label="Organization Admin"
+          isSelected={selectedRole === "Organization Admin"}
+          onPress={() => setSelectedRole("Organization Admin")}
         />
       </View>
 
-      <Button mode="contained" onPress={() => navigation.navigate("RecipientSignUp")} style={styles.nextButton}>
+      <Button mode="contained" onPress={() => navigation.navigate(selectedRole === "Employee" ? "EmployeeRegistration" : "RecipientSelectRole")} style={styles.nextButton}>
         Next
       </Button>
     </View>
@@ -70,4 +70,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RRegistrationScreen1;
+export default SelectRegistrationRole;

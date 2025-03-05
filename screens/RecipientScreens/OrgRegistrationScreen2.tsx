@@ -6,13 +6,18 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 
 const { width, height } = Dimensions.get("window");
 
-const RRegistrationScreen2 = ({ navigation }) => {
+const OrgRegistrationScreen2 = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+
+  const handlePhoneInput = (text) => {
+    const numericText = text.replace(/[^0-9]/g, "");
+    setPhoneNumber(numericText);
+  }
 
   return (
     <View style={styles.container}>
@@ -29,8 +34,13 @@ const RRegistrationScreen2 = ({ navigation }) => {
       <TextInput
         label="Company Phone Number"
         mode="outlined"
-        value={phoneNumber}
-        onChangeText={setPhoneNumber}
+        value={`+60${phoneNumber}`}
+        onChangeText={(text) => {
+          if (text.startsWith("+60")) {
+            handlePhoneInput(text.slice(3)); //
+          }
+        }}
+        keyboardType="numeric"
         style={styles.input}
       />
       <TextInput
@@ -101,6 +111,7 @@ const styles = StyleSheet.create({
     marginTop: height * 0.04,
   },
 
+
 });
 
-export default RRegistrationScreen2;
+export default OrgRegistrationScreen2;

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
-import { TextInput, Button} from "react-native-paper";
+import { TextInput, Button, HelperText} from "react-native-paper";
 import { Dropdown } from "react-native-element-dropdown";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
@@ -18,12 +18,13 @@ const companies = [
 ];
 
 
-const RLoginScreen = ({ navigation }) => {
+const EmployeeRegistrationScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isVisible, setIsVisible] = useState(false);
   const [company, setCompany] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
+  const [passKey,setPassKey] = useState("")
 
   return (
     <View style={styles.container}>
@@ -50,6 +51,16 @@ const RLoginScreen = ({ navigation }) => {
           setIsFocus(false);
         }}
       />
+       <TextInput
+         label="Organization passkey"
+         mode="outlined"
+         value={passKey}
+         onChangeText={setPassKey}
+         style={styles.passkeyInput}
+       />
+      <HelperText type="info" visible={true} style={styles.helperText}>
+        Get your passkey from your organization admin.
+      </HelperText>
       <TextInput
         label="Email Address"
         mode="outlined"
@@ -71,15 +82,8 @@ const RLoginScreen = ({ navigation }) => {
         style={styles.input}
       />
 
-      <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
-        <Text style={styles.linkText}>Forgot Password</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("SelectRegistrationRole")}>
-        <Text style={styles.linkText}>Sign Up</Text>
-      </TouchableOpacity>
-
       <Button mode="contained" onPress={() => console.log("Login")} style={styles.loginButton}>
-        LOGIN
+        Submit Registration
       </Button>
     </View>
   );
@@ -134,16 +138,23 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     marginBottom: height * 0.02,
   },
+  passkeyInput: {
+      width: "80%",
+      maxWidth: 450,
+      backgroundColor: "white",
+  },
   loginButton: {
     width: "60%",
     maxWidth: 400,
     marginTop: height * 0.04,
   },
-  linkText: {
-    color: "blue",
-    marginTop: height * 0.03,
-    fontSize: width * 0.04,
+
+  helperText: {
+    fontSize:   width*0.03,
+    alignSelf: "flex-start",
+    paddingHorizontal:width*0.1,
+    marginBottom : width*0.02,
   },
 });
 
-export default RLoginScreen;
+export default EmployeeRegistrationScreen;

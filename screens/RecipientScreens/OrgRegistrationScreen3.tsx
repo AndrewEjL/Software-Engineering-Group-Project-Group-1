@@ -14,7 +14,7 @@ const registrationTypes = [
   { label: "LLP Registration Number", value: "llp" },
 ];
 
-const RRegistrationScreen3 = ({ navigation }) => {
+const OrgRegistrationScreen3 = ({ navigation }) => {
   const [businessType, setBusinessType] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
   const [brn, setBrn] = useState(""); //Business registration type
@@ -93,7 +93,7 @@ const RRegistrationScreen3 = ({ navigation }) => {
 
       <Button
         mode="contained"
-        onPress={() => navigation.navigate("")}
+        onPress={() => navigation.navigate("RequestIC")}
         style={styles.nextButton}
       >
         Submit
@@ -171,4 +171,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RRegistrationScreen3;
+export default OrgRegistrationScreen3;
