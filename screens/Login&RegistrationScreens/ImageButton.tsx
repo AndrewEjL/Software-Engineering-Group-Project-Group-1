@@ -5,7 +5,7 @@ const { width } = Dimensions.get("window");
 
 const BUTTON_WIDTH = width * 0.4;
 const BUTTON_HEIGHT = BUTTON_WIDTH * 1.2;
-const IMAGE_SIZE = BUTTON_WIDTH * 0.8;
+const IMAGE_SIZE = BUTTON_WIDTH * 0.6;
 
 const ImageButton = ({ imageSource, label, isSelected, onPress, buttonStyle, textStyle, imageStyle }) => {
   return (

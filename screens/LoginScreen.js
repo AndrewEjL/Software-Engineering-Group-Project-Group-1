@@ -15,6 +15,7 @@ const LoginScreen = ({ navigation }) => {
     // Navigate to sign up page
     // navigation.navigate('SignUp');
     console.log('Navigate to sign up page');
+    navigation.navigate("SelectRegistrationRole")
   };
 
   return (

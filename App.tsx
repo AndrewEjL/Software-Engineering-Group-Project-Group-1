@@ -4,13 +4,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import LoginScreen from './screens/LoginScreen';
-import SelectRegistrationRole from './screens/RecipientScreens/SelectRegistrationRole.tsx';
-import RLoginScreen from './screens/RecipientScreens/RLoginScreen.tsx';
-import OrgRegistrationScreen1 from './screens/RecipientScreens/OrgRegistrationScreen1.tsx';
-import OrgRegistrationScreen2 from './screens/RecipientScreens/OrgRegistrationScreen2.tsx';
-import OrgRegistrationScreen3 from './screens/RecipientScreens/OrgRegistrationScreen3.tsx';
-import EmployeeRegistrationScreen from './screens/RecipientScreens/EmployeeRegistrationScreen.tsx';
-import RequestIC from './screens/RecipientScreens/requestIC.tsx';
+import SelectRegistrationRole from './screens/Login&RegistrationScreens/SelectRegistrationRole.tsx';
+import OrgRegistration  from './screens/Login&RegistrationScreens/organizationRegistration.tsx';
+import OrgRegistrationCompleted from './screens/Login&RegistrationScreens/OrgRegistrationCompleted.tsx'
+
 
 // Define your navigation types
 type RootStackParamList = {
@@ -56,12 +53,6 @@ const LoginOptions = ({ navigation }: LoginOptionsProps) => {
         >
           <Text style={styles.buttonText}>Create Account</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('RecipientLogin')}
-        >
-          <Text style={styles.buttonText}>Login As Recipient</Text>
-        </TouchableOpacity>
       </View>
     </View>
   );
@@ -78,7 +69,7 @@ const App = () => {
         <Stack.Screen
           name="Login Options"
           component={LoginOptions}
-          options={{ title: 'Login Options' }}
+          options={{ title: 'Login Options', headerShown: false  }}
         />
         <Stack.Screen
           name="Login"
@@ -91,24 +82,9 @@ const App = () => {
           options={{ title: 'Create Account' }}
         />
         <Stack.Screen
-          name="RecipientLogin"
-          component={RLoginScreen}
-          options={{ title: 'Login as recipient' }}
-        />
-        <Stack.Screen
-          name="RecipientSelectRole"
-          component={OrgRegistrationScreen1}
-          options={{ title: 'Select role' }}
-        />
-        <Stack.Screen
-          name="RecipientSignUp"
-          component={OrgRegistrationScreen2}
-          options={{ title: 'Sign Up' }}
-        />
-        <Stack.Screen
-          name="CompanyInformationRequest"
-          component={OrgRegistrationScreen3}
-          options={{ title: 'Company Information' }}
+          name="OrganizationRegistration"
+          component={OrgRegistration }
+          options={{ title: 'Organization Registration' }}
         />
         <Stack.Screen
           name="SelectRegistrationRole"
@@ -116,14 +92,9 @@ const App = () => {
           options={{ title: 'Select role' }}
         />
         <Stack.Screen
-          name="EmployeeRegistration"
-          component={EmployeeRegistrationScreen}
-          options={{ title: 'Register as an employee' }}
-        />
-        <Stack.Screen
-          name="RequestIC"
-          component={RequestIC}
-          options={{ title: 'IC photo' }}
+          name="OrgRegistrationCompleted"
+          component={OrgRegistrationCompleted}
+          options={{ headerShown: false}}
         />
       </Stack.Navigator>
     </NavigationContainer>

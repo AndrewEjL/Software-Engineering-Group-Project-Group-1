@@ -15,20 +15,20 @@ const SelectRegistrationRole = ({ navigation }) => {
 
       <View style={styles.buttonContainer}>
         <ImageButton
-          imageSource={require("../assets/employees.png")}
-          label="Employee"
-          isSelected={selectedRole === "Employee"}
-          onPress={() => setSelectedRole("Employee")}
+          imageSource={require("../assets/client.png")}
+          label="Client"
+          isSelected={selectedRole === "Client"}
+          onPress={() => setSelectedRole("Client")}
         />
         <ImageButton
-          imageSource={require("../assets/admin.png")}
-          label="Organization Admin"
-          isSelected={selectedRole === "Organization Admin"}
-          onPress={() => setSelectedRole("Organization Admin")}
+          imageSource={require("../assets/recycleFacility.png")}
+          label="Organization"
+          isSelected={selectedRole === "Organization"}
+          onPress={() => setSelectedRole("Organization")}
         />
       </View>
 
-      <Button mode="contained" onPress={() => navigation.navigate(selectedRole === "Employee" ? "EmployeeRegistration" : "RecipientSelectRole")} style={styles.nextButton}>
+      <Button mode="contained" onPress={() => navigation.navigate(selectedRole === "Client" ? "EmployeeRegistration" : "OrganizationRegistration")} style={styles.nextButton} disabled={!selectedRole}>
         Next
       </Button>
     </View>
