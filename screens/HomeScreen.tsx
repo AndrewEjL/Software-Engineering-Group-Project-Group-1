@@ -1,11 +1,15 @@
-import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Animated, Easing } from 'react-native';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Animated, Easing, ScrollView, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useUser, DevAutoLogin, ScheduledPickup, type ListedItem } from '../contexts/UserContext';
+import { useFocusEffect } from '@react-navigation/native';
 
 type RootStackParamList = {
   Home: undefined;
-  // Add other screen types as needed
+  PickupDetails: { pickupId: string };
+  AddPickupItem: undefined;
+  EditListedItems: { itemId: string };
 };
 
 type HomeScreenProps = {
@@ -16,11 +20,6 @@ type HomeScreenProps = {
 interface PickupItem {
   id: number;
   facility: string;
-}
-
-interface ListedItem {
-  id: number;
-  name: string;
 }
 
 const LoadingIcon: React.FC = () => {
@@ -44,7 +43,7 @@ const LoadingIcon: React.FC = () => {
 
   const spin = spinValue.interpolate({
     inputRange: [0, 1],
-    outputRange: ['0deg', '360deg'],
+    outputRange: ['360deg', '0deg'],
   });
 
   return (
@@ -55,29 +54,55 @@ const LoadingIcon: React.FC = () => {
 };
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
-  // Placeholder data
-  const scheduledPickups: PickupItem[] = [
-    { id: 1, facility: 'Facility A' },
-  ];
+  const { user, getScheduledPickups, getListedItems } = useUser();
+  const [scheduledPickups, setScheduledPickups] = useState<ScheduledPickup[]>([]);
+  const [listedItems, setListedItems] = useState<ListedItem[]>([]);
+  const [isPickupsLoading, setIsPickupsLoading] = useState(true);
+  const [isItemsLoading, setIsItemsLoading] = useState(true);
 
-  const listedItems: ListedItem[] = [
-    { id: 1, name: 'S24 Ultra' },
-  ];
+  // Load data when component mounts
+  useEffect(() => {
+    loadData();
+  }, []);
 
-  const handleViewPickup = (id: number) => {
-    console.log('View pickup:', id);
+  // Refresh data when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      loadData();
+    }, [])
+  );
+
+  const loadData = async () => {
+    if (user) {
+      // Load pickups
+      setIsPickupsLoading(true);
+      const pickups = await getScheduledPickups();
+      setScheduledPickups(pickups);
+      setIsPickupsLoading(false);
+
+      // Load listed items
+      setIsItemsLoading(true);
+      const items = await getListedItems();
+      setListedItems(items);
+      setIsItemsLoading(false);
+    }
   };
 
-  const handleEditPickup = (id: number) => {
-    console.log('Edit pickup:', id);
+  const handleViewPickup = (pickupId: string) => {
+    navigation.navigate('PickupDetails', { pickupId });
   };
 
-  const handleEditItem = (id: number) => {
-    console.log('Edit item:', id);
+  const handleEditPickup = (pickupId: string) => {
+    // TODO: Implement edit pickup functionality
+    Alert.alert('Coming Soon', 'Edit pickup functionality will be available soon');
+  };
+
+  const handleEditItem = (itemId: string) => {
+    navigation.navigate('EditListedItems', { itemId });
   };
 
   const handleAddPickupItem = () => {
-    console.log('Add pickup item');
+    navigation.navigate('AddPickupItem');
   };
 
   const handleTabPress = (tabName: string) => {
@@ -86,34 +111,45 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <DevAutoLogin />
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.points}>Points 0</Text>
+        <Text style={styles.title}>E-Waste App</Text>
+        <View style={styles.pointsContainer}>
+          <Icon name="stars" size={20} color="#5E4DCD" />
+          <Text style={styles.points}>Points {user?.points || 0}</Text>
+        </View>
       </View>
 
       {/* Scheduled Pickups Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Your Scheduled Pickups</Text>
         <View style={styles.tableContainer}>
-          {scheduledPickups.map((pickup) => (
-            <View key={pickup.id} style={styles.tableRow}>
-              <Text style={styles.facilityText}>{pickup.facility}</Text>
-              <View style={styles.actionButtons}>
-                <TouchableOpacity 
-                  style={styles.iconButton} 
-                  onPress={() => handleViewPickup(pickup.id)}
-                >
-                  <Icon name="visibility" size={24} color="#666" />
-                </TouchableOpacity>
-                <TouchableOpacity 
-                  style={styles.iconButton} 
-                  onPress={() => handleEditPickup(pickup.id)}
-                >
-                  <LoadingIcon />
-                </TouchableOpacity>
+          <ScrollView style={styles.scrollView}>
+            {isPickupsLoading ? (
+              <View style={styles.loadingContainer}>
+                <LoadingIcon />
               </View>
-            </View>
-          ))}
+            ) : scheduledPickups.map((pickup) => (
+              <View key={pickup.id} style={styles.tableRow}>
+                <Text style={styles.facilityText}>{pickup.facilityName}</Text>
+                <View style={styles.actionButtons}>
+                  <TouchableOpacity 
+                    style={styles.iconButton} 
+                    onPress={() => handleViewPickup(pickup.id)}
+                  >
+                    <Icon name="visibility" size={24} color="#666" />
+                  </TouchableOpacity>
+                  <TouchableOpacity 
+                    style={styles.iconButton} 
+                    onPress={() => handleEditPickup(pickup.id)}
+                  >
+                    <LoadingIcon />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))}
+          </ScrollView>
         </View>
       </View>
 
@@ -121,17 +157,34 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Your Listed Items</Text>
         <View style={styles.tableContainer}>
-          {listedItems.map((item) => (
-            <View key={item.id} style={styles.tableRow}>
-              <Text style={styles.itemText}>{item.name}</Text>
-              <TouchableOpacity 
-                style={styles.iconButton} 
-                onPress={() => handleEditItem(item.id)}
-              >
-                <Icon name="edit" size={24} color="#666" />
-              </TouchableOpacity>
-            </View>
-          ))}
+          <ScrollView style={styles.scrollView}>
+            {isItemsLoading ? (
+              <View style={styles.loadingContainer}>
+                <LoadingIcon />
+              </View>
+            ) : listedItems.length === 0 ? (
+              <View style={styles.emptyContainer}>
+                <Text style={styles.emptyText}>No items listed yet</Text>
+              </View>
+            ) : (
+              listedItems.map((item) => (
+                <View key={item.id} style={styles.tableRow}>
+                  <View style={styles.itemDetails}>
+                    <Text style={styles.itemText}>{item.name}</Text>
+                    <Text style={styles.itemSubtext}>
+                      {item.type} • {item.condition}
+                    </Text>
+                  </View>
+                  <TouchableOpacity 
+                    style={styles.iconButton} 
+                    onPress={() => handleEditItem(item.id)}
+                  >
+                    <Icon name="edit" size={24} color="#666" />
+                  </TouchableOpacity>
+                </View>
+              ))
+            )}
+          </ScrollView>
         </View>
       </View>
 
@@ -185,11 +238,31 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 16,
-    alignItems: 'flex-end',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
+    marginBottom: 8,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  pointsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
   },
   points: {
     fontSize: 16,
     fontWeight: '500',
+    marginLeft: 4,
+    color: '#333',
   },
   section: {
     marginBottom: 24,
@@ -204,6 +277,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
     borderRadius: 8,
     overflow: 'hidden',
+    height: 200, // Fixed height for the container
+  },
+  scrollView: {
+    flexGrow: 0, // Prevents ScrollView from expanding
   },
   tableRow: {
     flexDirection: 'row',
@@ -263,6 +340,27 @@ const styles = StyleSheet.create({
   },
   activeNavText: {
     color: '#5E4DCD',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyText: {
+    color: '#666',
+    fontSize: 16,
+  },
+  itemDetails: {
+    flexDirection: 'column',
+  },
+  itemSubtext: {
+    color: '#666',
+    fontSize: 12,
   },
 });
 

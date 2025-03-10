@@ -3,11 +3,16 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import LoginScreen from './screens/LoginScreen';
+import LoginScreen from './screens/LoginScreen.tsx';
 import SelectRegistrationRole from './screens/Login&RegistrationScreens/SelectRegistrationRole.tsx';
 import OrgRegistration  from './screens/Login&RegistrationScreens/organizationRegistration.tsx';
 import OrgRegistrationCompleted from './screens/Login&RegistrationScreens/OrgRegistrationCompleted.tsx'
 import HomeScreen from './screens/HomeScreen.tsx';
+import PickupDetails from './screens/PickupDetails';
+import { UserProvider } from './contexts/UserContext';
+import AddPickupItemScreen from './screens/AddPickupItemScreen';
+import MapScreen from './screens/MapScreen';
+import EditListedItems from './screens/EditListedItems';
 
 // Define your navigation types
 type RootStackParamList = {
@@ -18,6 +23,22 @@ type RootStackParamList = {
   SelectRegistrationRole: undefined;
   OrgRegistrationCompleted: undefined;
   Home: undefined;
+  PickupDetails: { pickupId: string };
+  AddPickupItem: undefined;
+  MapScreen: {
+    itemData: {
+      name: string;
+      type: string;
+      condition: string;
+      dimensions: {
+        length: string;
+        width: string;
+        height: string;
+      };
+      quantity: string;
+    };
+  };
+  EditListedItems: { itemId: string };
 };
 
 // Type for navigation prop
@@ -68,45 +89,67 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 // Main App Component with Navigation
 const App = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login Options">
-        <Stack.Screen
-          name="Login Options"
-          component={LoginOptions}
-          options={{ title: 'Login Options', headerShown: false  }}
-        />
-        <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{ title: 'Login' }}
-        />
-        <Stack.Screen
-          name="CreateAccount"
-          component={RegisterScreen}
-          options={{ title: 'Create Account' }}
-        />
-        <Stack.Screen
-          name="OrganizationRegistration"
-          component={OrgRegistration }
-          options={{ title: 'Organization Registration' }}
-        />
-        <Stack.Screen
-          name="SelectRegistrationRole"
-          component={SelectRegistrationRole}
-          options={{ title: 'Select role' }}
-        />
-        <Stack.Screen
-          name="OrgRegistrationCompleted"
-          component={OrgRegistrationCompleted}
-          options={{ headerShown: false}}
-        />
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{ headerShown: false}}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <UserProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Login Options">
+          <Stack.Screen
+            name="Login Options"
+            component={LoginOptions}
+            options={{ title: 'Login Options', headerShown: false  }}
+          />
+          <Stack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{ title: 'Login' }}
+          />
+          <Stack.Screen
+            name="CreateAccount"
+            component={RegisterScreen}
+            options={{ title: 'Create Account' }}
+          />
+          <Stack.Screen
+            name="OrganizationRegistration"
+            component={OrgRegistration }
+            options={{ title: 'Organization Registration' }}
+          />
+          <Stack.Screen
+            name="SelectRegistrationRole"
+            component={SelectRegistrationRole}
+            options={{ title: 'Select role' }}
+          />
+          <Stack.Screen
+            name="OrgRegistrationCompleted"
+            component={OrgRegistrationCompleted}
+            options={{ headerShown: false}}
+          />
+          <Stack.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{ headerShown: false}}
+          />
+          <Stack.Screen
+            name="PickupDetails"
+            component={PickupDetails}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="AddPickupItem"
+            component={AddPickupItemScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="MapScreen"
+            component={MapScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="EditListedItems"
+            component={EditListedItems}
+            options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </UserProvider>
   );
 };
 
