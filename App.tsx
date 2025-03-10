@@ -4,7 +4,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import LoginScreen from './screens/LoginScreen';
-import RLoginScreen from './screens/RecipientScreens/RLoginScreen.tsx';
+import SelectRegistrationRole from './screens/Login&RegistrationScreens/SelectRegistrationRole.tsx';
+import OrgRegistration  from './screens/Login&RegistrationScreens/organizationRegistration.tsx';
+import OrgRegistrationCompleted from './screens/Login&RegistrationScreens/OrgRegistrationCompleted.tsx'
+
 
 // Define your navigation types
 type RootStackParamList = {
@@ -50,12 +53,6 @@ const LoginOptions = ({ navigation }: LoginOptionsProps) => {
         >
           <Text style={styles.buttonText}>Create Account</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('RecipientLogin')}
-        >
-          <Text style={styles.buttonText}>Login As Recipient</Text>
-        </TouchableOpacity>
       </View>
     </View>
   );
@@ -72,7 +69,7 @@ const App = () => {
         <Stack.Screen
           name="Login Options"
           component={LoginOptions}
-          options={{ title: 'Login Options' }}
+          options={{ title: 'Login Options', headerShown: false  }}
         />
         <Stack.Screen
           name="Login"
@@ -85,9 +82,19 @@ const App = () => {
           options={{ title: 'Create Account' }}
         />
         <Stack.Screen
-          name="RecipientLogin"
-          component={RLoginScreen}
-          options={{ title: 'Login as recipient' }}
+          name="OrganizationRegistration"
+          component={OrgRegistration }
+          options={{ title: 'Organization Registration' }}
+        />
+        <Stack.Screen
+          name="SelectRegistrationRole"
+          component={SelectRegistrationRole}
+          options={{ title: 'Select role' }}
+        />
+        <Stack.Screen
+          name="OrgRegistrationCompleted"
+          component={OrgRegistrationCompleted}
+          options={{ headerShown: false}}
         />
       </Stack.Navigator>
     </NavigationContainer>
