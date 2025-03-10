@@ -7,6 +7,7 @@ const LoginScreen = ({ navigation }) => {
 
   const handleSignIn = () => {
     console.log('Signing in with:', email, password);
+    navigation.navigate('Home');
   };
 
   const handleSignUp = () => {

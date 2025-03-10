@@ -7,13 +7,17 @@ import LoginScreen from './screens/LoginScreen';
 import SelectRegistrationRole from './screens/Login&RegistrationScreens/SelectRegistrationRole.tsx';
 import OrgRegistration  from './screens/Login&RegistrationScreens/organizationRegistration.tsx';
 import OrgRegistrationCompleted from './screens/Login&RegistrationScreens/OrgRegistrationCompleted.tsx'
-
+import HomeScreen from './screens/HomeScreen.tsx';
 
 // Define your navigation types
 type RootStackParamList = {
   'Login Options': undefined;
   Login: undefined;
   CreateAccount: undefined;
+  OrganizationRegistration: undefined;
+  SelectRegistrationRole: undefined;
+  OrgRegistrationCompleted: undefined;
+  Home: undefined;
 };
 
 // Type for navigation prop
@@ -94,6 +98,11 @@ const App = () => {
         <Stack.Screen
           name="OrgRegistrationCompleted"
           component={OrgRegistrationCompleted}
+          options={{ headerShown: false}}
+        />
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
           options={{ headerShown: false}}
         />
       </Stack.Navigator>
