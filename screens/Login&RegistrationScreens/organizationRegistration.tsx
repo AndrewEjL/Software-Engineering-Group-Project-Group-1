@@ -120,6 +120,8 @@ const OrgRegistration = ({ navigation }) => {
         value={address}
         onChangeText={setAddress}
         style={styles.input}
+        multiline={true}
+        numberOfLines={4}
       />
 
       <TextInput

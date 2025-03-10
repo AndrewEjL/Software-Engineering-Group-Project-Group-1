@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { useUser } from '../contexts/UserContext';
+import { TextInput } from 'react-native-paper';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 type LoginScreenProps = {
@@ -61,6 +62,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
             <View style={styles.inputContainer}>
               <TextInput
                 style={[styles.input, { color: '#000' }]}
+                mode="outlined"
+                label="Email"
                 placeholder="Email"
                 placeholderTextColor="#9e9e9e"
                 value={email}
@@ -75,6 +78,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
               <TextInput
                 style={[styles.input, { color: '#000' }]}
+                mode="outlined"
+                label="Password"
                 placeholder="Password"
                 placeholderTextColor="#9e9e9e"
                 value={password}
@@ -158,11 +163,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
     borderRadius: 8,
-    padding: 15,
-    marginBottom: 15,
+    marginBottom: 20,
     fontSize: 16,
     backgroundColor: '#F8F8F8',
   },

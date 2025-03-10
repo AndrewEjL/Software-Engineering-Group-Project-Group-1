@@ -59,29 +59,29 @@ const RegisterScreen = () => {
 };
 
 // Main Home Screen with Navigation Buttons
-const LoginOptions = ({ navigation }: LoginOptionsProps) => {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.header}>E-Waste Management</Text>
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('Login')}
-        >
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('CreateAccount')}
-        >
-          <Text style={styles.buttonText}>Create Account</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-};
+// const LoginOptions = ({ navigation }: LoginOptionsProps) => {
+//   return (
+//     <View style={styles.container}>
+//       <Text style={styles.header}>E-Waste Management</Text>
+//
+//       <View style={styles.buttonContainer}>
+//         <TouchableOpacity
+//           style={styles.button}
+//           onPress={() => navigation.navigate('Login')}
+//         >
+//           <Text style={styles.buttonText}>Login</Text>
+//         </TouchableOpacity>
+//
+//         <TouchableOpacity
+//           style={styles.button}
+//           onPress={() => navigation.navigate('CreateAccount')}
+//         >
+//           <Text style={styles.buttonText}>Create Account</Text>
+//         </TouchableOpacity>
+//       </View>
+//     </View>
+//   );
+// };
 
 // Create the navigation stack
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -91,16 +91,11 @@ const App = () => {
   return (
     <UserProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Login Options">
-          <Stack.Screen
-            name="Login Options"
-            component={LoginOptions}
-            options={{ title: 'Login Options', headerShown: false  }}
-          />
+        <Stack.Navigator initialRouteName="Login">
           <Stack.Screen
             name="Login"
             component={LoginScreen}
-            options={{ title: 'Login' }}
+            options={{ title: 'Login' ,headerShown:false}}
           />
           <Stack.Screen
             name="CreateAccount"
