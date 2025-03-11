@@ -145,11 +145,15 @@ const OrgRegistration = ({ navigation }) => {
       <TextInput
         label="Phone Number"
         mode="outlined"
-        value={phoneNumber ? `+60${phoneNumber}` : "+60"}
+        value={`+60${phoneNumber}`}
         onChangeText={(text) => {
-          const numberOnly = text.replace(/^\+60/, "");
+          if (!text.startsWith("+60")) {
+            text = "+60";
+          }
+          const numberOnly = text.slice(3).replace(/\D/g, "");
           setPhoneNumber(numberOnly);
         }}
+        keyboardType="numeric"
         style={styles.input}
       />
 

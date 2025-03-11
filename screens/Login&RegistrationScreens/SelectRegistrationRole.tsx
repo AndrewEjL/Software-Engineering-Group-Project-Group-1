@@ -28,7 +28,7 @@ const SelectRegistrationRole = ({ navigation }) => {
         />
       </View>
 
-      <Button mode="contained" onPress={() => navigation.navigate(selectedRole === "Client" ? "EmployeeRegistration" : "OrganizationRegistration")} style={styles.nextButton} disabled={!selectedRole}>
+      <Button mode="contained" onPress={() => navigation.navigate(selectedRole === "Client" ? "ClientRegistration" : "OrganizationRegistration")} style={styles.nextButton} disabled={!selectedRole}>
         Next
       </Button>
     </View>

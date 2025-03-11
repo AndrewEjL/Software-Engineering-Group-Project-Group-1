@@ -13,6 +13,7 @@ import { UserProvider } from './contexts/UserContext';
 import AddPickupItemScreen from './screens/AddPickupItemScreen';
 import MapScreen from './screens/MapScreen';
 import EditListedItems from './screens/EditListedItems';
+import ClientRegistration from './screens/Login&RegistrationScreens/clientRegistration.tsx';
 
 // Define your navigation types
 type RootStackParamList = {
@@ -141,6 +142,11 @@ const App = () => {
             name="EditListedItems"
             component={EditListedItems}
             options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ClientRegistration"
+            component={ClientRegistration}
+            options={{ title: 'Client Registration'}}
           />
         </Stack.Navigator>
       </NavigationContainer>
