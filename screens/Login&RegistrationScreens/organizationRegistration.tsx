@@ -40,7 +40,7 @@ const OrgRegistration = ({ navigation }) => {
   const existingEmails = ["test@example.com", "user@gmail.com"];
   const existingBrns = ["123456789", "987654321"];
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;//valid email format
 
   if (!emailRegex.test(email)) {
     setEmailError("Invalid email format.");

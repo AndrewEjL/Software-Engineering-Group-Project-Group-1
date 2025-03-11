@@ -13,19 +13,23 @@ const ClientRegistration = ({ navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError,setConfirmPasswordError]=useState("");
 
 
-  const isFormValid = useMemo(() => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return (
-      username.trim() !== "" &&
-      phoneNumber.trim() !== ""
-    );
-  }, [username, phoneNumber]);
+const isFormValid = useMemo(() => {
+  return (
+    username.trim() !== "" &&
+    email.trim() !== "" &&
+    phoneNumber.trim() !== "" &&
+    password.trim() !== "" &&
+    confirmPassword.trim() !== ""
+  );
+}, [username, email, phoneNumber, password, confirmPassword]);
 
   const handleSubmit = async () => {
     const existingEmails = ["test@example.com", "user@gmail.com"];
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;//valid email format
+    const passwordRegex = /^(?=.*[0-9])(?=.*[\W_]).{8,}$/;// at least 8 characters, including a number and a special character.
 
     if (!emailRegex.test(email)) {
       setEmailError("Invalid email format.");
@@ -37,15 +41,19 @@ const ClientRegistration = ({ navigation }) => {
     } else {
       setEmailError("");
     }
-
-    if (password !== confirmPassword) {
-      setPasswordError("Passwords do not match.");
-      return;
-    } else {
-      setPasswordError("");
+    if (!passwordRegex.test(password)) {
+        setPasswordError("Password must be at least 8 characters long and include a number and a special character.");
+        return;
     }
 
-    Alert.alert("Success", "Your account has been registered.");
+    if (password !== confirmPassword) {
+      setConfirmPasswordError("Passwords do not match.");
+      return;
+    } else {
+      setConfirmPasswordError("");
+    }
+
+    Alert.alert("Success", "Your account has been registered, you may login now.");
     navigation.navigate("Login");
   };
 
@@ -89,7 +97,6 @@ const ClientRegistration = ({ navigation }) => {
           const numberOnly = text.slice(3).replace(/\D/g, "");
           setPhoneNumber(numberOnly);
         }}
-        keyboardType="numeric"
         style={styles.input}
       />
 
@@ -102,6 +109,18 @@ const ClientRegistration = ({ navigation }) => {
         style={styles.input}
         error={passwordError !== ""}
       />
+      <HelperText
+        type={passwordError ? "error" : "info"}
+        style={[styles.helperText, { color: passwordError ? "red" : "blue" }]}
+      >
+        <Icon
+          name={passwordError ? "error-outline" : "info-outline"}
+          size={width * 0.03}
+          color={passwordError ? "red" : "blue"}
+        />{" "}
+        {passwordError ? passwordError : "At least 8 characters, including a number and a special character."}
+      </HelperText>
+
       <TextInput
         label="Confirm password"
         mode="outlined"
@@ -109,11 +128,11 @@ const ClientRegistration = ({ navigation }) => {
         onChangeText={setConfirmPassword}
         secureTextEntry
         style={styles.input}
-        error={passwordError !== ""}
+        error={confirmPasswordError !== ""}
       />
-      {passwordError ? (
+      {confirmPasswordError ? (
         <HelperText type="error" style={styles.helperText}>
-          <Icon name="error-outline" size={width * 0.03} color="red" /> {passwordError}
+          <Icon name="error-outline" size={width * 0.03} color="red" /> {confirmPasswordError}
         </HelperText>
       ) : null}
 
