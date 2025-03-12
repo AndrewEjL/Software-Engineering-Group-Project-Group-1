@@ -1,9 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { View, TextInput, Button, StyleSheet } from 'react-native';
+import { View, TextInput, Text, Button, StyleSheet } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-import MapViewDirections from 'react-native-maps-directions';
+import { MapViewRoute } from 'react-native-maps-routes';
 
-const GOOGLE_MAPS_API_KEY = 'AIzaSyB2dlE9zqDNpEXhLySMrQ_iAsy7uXDsm1Y';
+const GOOGLE_MAPS_API_KEY = 'AIzaSyDqpBZYwzP8m_L8du5imDrLUQHYIUZFHtU';
 
 const NavigationMap = () => {
   const mapRef = useRef(null);
@@ -11,7 +11,7 @@ const NavigationMap = () => {
   const [destination, setDestination] = useState(null);
   const [originText, setOriginText] = useState("");
   const [destinationText, setDestinationText] = useState("");
-
+  const [routeInfo, setRouteInfo] = useState(null);
 
   const getCoordinatesFromAddress = async (address) => {
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${GOOGLE_MAPS_API_KEY}`;
@@ -74,15 +74,26 @@ const NavigationMap = () => {
         >
           {origin && <Marker coordinate={origin} title="Current Location" />}
           {destination && <Marker coordinate={destination} title="Destination" />}
-          {origin && destination && (
-            <MapViewDirections
+          {origin && destination &&
+            <MapViewRoute
               origin={origin}
               destination={destination}
-              apikey={GOOGLE_MAPS_API_KEY}
-              strokeWidth={5}
+              apiKey={GOOGLE_MAPS_API_KEY}
+              strokeWidth={4}
               strokeColor="blue"
+              mode="DRIVE"
+              onReady={(data) => {
+                 console.log('Full route data:', JSON.stringify(data, null, 2));
+                 alert(JSON.stringify(data));
+                setRouteInfo({
+                  distance: data.distance,
+                  duration: data.duration,
+                });
+              }}
+              onError={(error) => console.error('Routing error:', error)}
             />
-          )}
+
+          }
         </MapView>
       </View>
 
@@ -99,6 +110,12 @@ const NavigationMap = () => {
           value={destinationText}
           onChangeText={setDestinationText}
         />
+            {routeInfo && (
+             <View style={styles.routeInfo}>
+               <Text>Estimated Time: {routeInfo.duration} mins</Text>
+               <Text>Distance: {routeInfo.distance} km</Text>
+             </View>
+           )}
         <Button title="Route" onPress={handleSearch} />
       </View>
     </View>
@@ -136,6 +153,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 8,
+  },
+  routeInfo: {
+    marginBottom: 10,
+    backgroundColor: "#f0f0f0",
+    padding: 10,
+    borderRadius: 5,
   },
 });
 

@@ -14,8 +14,8 @@ import AddPickupItemScreen from './screens/AddPickupItemScreen';
 import MapScreen from './screens/MapScreen';
 import EditListedItems from './screens/EditListedItems';
 import ClientRegistration from './screens/Login&RegistrationScreens/clientRegistration.tsx';
-import MapRoute from './screens/MapRoute.tsx';
 import NavigationMap from './screens/GoogleMapsScreens/NavigationMap.tsx';
+
 
 // Define your navigation types
 type RootStackParamList = {
@@ -154,7 +154,6 @@ const App = () => {
             name="NavigationMap"
             component={NavigationMap}
             options={{headerShown:false}}
-
           />
         </Stack.Navigator>
       </NavigationContainer>
