@@ -5,7 +5,7 @@ import polyline from "@mapbox/polyline";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyDqpBZYwzP8m_L8du5imDrLUQHYIUZFHtU";
 
-const NavigationMap = () => {
+const NavigationMap = ({ navigation }) => {
   const mapRef = useRef(null);
   const [origin, setOrigin] = useState(null);
   const [destination, setDestination] = useState(null);

@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
 import { useUser } from '../contexts/UserContext';
+import SelectLocation from './GoogleMapsScreens/SelectLocation.tsx'
 
 type RootStackParamList = {
   MapScreen: {
@@ -32,8 +33,13 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation, route }) => {
   const { listItem } = useUser();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
 
   const handleListItem = async () => {
+    if (!selectedAddress) {
+        setError("Please select a location first.");
+        return;
+    }
     setIsLoading(true);
     setError(null);
     
@@ -44,7 +50,8 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation, route }) => {
         type: itemData.type,
         condition: itemData.condition,
         dimensions: itemData.dimensions,
-        quantity: itemData.quantity
+        quantity: itemData.quantity,
+        location: selectedAddress,
       });
       
       if (success) {
@@ -73,7 +80,7 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation, route }) => {
 
       {/* Map Container (placeholder) */}
       <View style={styles.mapContainer}>
-        <Text style={styles.mapPlaceholder}>Map will be displayed here</Text>
+        <SelectLocation style={styles.mapContainer} onLocationSelect={setSelectedAddress}/>
         
         {/* Item Details */}
         <View style={styles.itemDetailsContainer}>
@@ -132,8 +139,7 @@ const styles = StyleSheet.create({
   mapContainer: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
+    width: "100%",
   },
   mapPlaceholder: {
     fontSize: 16,
@@ -145,7 +151,7 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 8,
     width: '100%',
-    marginTop: 20,
+    marginTop: 10,
   },
   itemDetailsTitle: {
     fontSize: 16,

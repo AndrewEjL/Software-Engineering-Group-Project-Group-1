@@ -15,7 +15,7 @@ import MapScreen from './screens/MapScreen';
 import EditListedItems from './screens/EditListedItems';
 import ClientRegistration from './screens/Login&RegistrationScreens/clientRegistration.tsx';
 import NavigationMap from './screens/GoogleMapsScreens/NavigationMap.tsx';
-
+import SelectLocation from './screens/GoogleMapsScreens/SelectLocation.tsx';
 
 // Define your navigation types
 type RootStackParamList = {
@@ -94,7 +94,7 @@ const App = () => {
   return (
     <UserProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="NavigationMap">
+        <Stack.Navigator initialRouteName="Home">
           <Stack.Screen
             name="Login"
             component={LoginScreen}
@@ -153,6 +153,11 @@ const App = () => {
           <Stack.Screen
             name="NavigationMap"
             component={NavigationMap}
+            options={{headerShown:false}}
+          />
+          <Stack.Screen
+            name="SelectLocation"
+            component={SelectLocation}
             options={{headerShown:false}}
           />
         </Stack.Navigator>
