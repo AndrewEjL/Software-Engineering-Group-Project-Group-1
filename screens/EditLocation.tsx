@@ -9,7 +9,6 @@ import {
   Platform, 
   Keyboard, 
   TextInput,
-  Button,
   TouchableWithoutFeedback,
   KeyboardAvoidingView
 } from 'react-native';
@@ -23,33 +22,25 @@ import { useUser } from '../contexts/UserContext';
 const GOOGLE_MAPS_API_KEY = "AIzaSyDqpBZYwzP8m_L8du5imDrLUQHYIUZFHtU";
 
 type RootStackParamList = {
-  MapScreen: {
-    itemData: {
-      name: string;
-      type: string;
-      condition: string;
-      dimensions: {
-        length: string;
-        width: string;
-        height: string;
-      };
-      quantity: string;
-    };
+  EditLocation: {
+    itemId: string;
+    currentAddress: string;
   };
-  Home: undefined;
+  EditListedItems: { itemId: string };
 };
 
-type MapScreenProps = {
-  navigation: NativeStackNavigationProp<RootStackParamList, 'MapScreen'>;
-  route: RouteProp<RootStackParamList, 'MapScreen'>;
+type EditLocationProps = {
+  navigation: NativeStackNavigationProp<RootStackParamList, 'EditLocation'>;
+  route: RouteProp<RootStackParamList, 'EditLocation'>;
 };
 
-const MapScreen: React.FC<MapScreenProps> = ({ navigation, route }) => {
-  const { itemData } = route.params;
-  const { listItem } = useUser();
+const EditLocation: React.FC<EditLocationProps> = ({ navigation, route }) => {
+  const { itemId, currentAddress } = route.params;
+  const { updateListedItem, getListedItems } = useUser();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const [itemData, setItemData] = useState<any>(null);
   
   // Map and location state
   const mapRef = useRef(null);
@@ -57,8 +48,37 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation, route }) => {
   const [location, setLocation] = useState({
     latitude: null,
     longitude: null,
-    address: "",
+    address: currentAddress || "",
   });
+
+  // Load item data
+  useEffect(() => {
+    const loadItem = async () => {
+      try {
+        const items = await getListedItems();
+        const item = items.find(item => item.id === itemId);
+        if (item) {
+          setItemData(item);
+        }
+      } catch (err) {
+        console.error('Error loading item:', err);
+      }
+    };
+    
+    loadItem();
+  }, [itemId]);
+
+  // Auto-search the current address when component mounts
+  useEffect(() => {
+    if (currentAddress) {
+      // Set a small delay to ensure the component is fully mounted
+      const timer = setTimeout(() => {
+        fetchCoordinates();
+      }, 500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   // Keyboard listeners
   useEffect(() => {
@@ -95,7 +115,7 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation, route }) => {
         updateLocation(lat, lng, location.address);
         Keyboard.dismiss();
       } else {
-        alert("Address not found");
+        console.error("Address not found");
       }
     } catch (error) {
       console.error("Geocoding error", error);
@@ -129,18 +149,24 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation, route }) => {
     });
   };
 
-  // Handle listing item
-  const handleListItem = async () => {
+  // Handle saving the edited location
+  const handleSaveEdit = async () => {
     if (!location.address) {
         setError("Please select a location first.");
         return;
     }
+    
+    if (!itemData) {
+        setError("Item data not found.");
+        return;
+    }
+    
     setIsLoading(true);
     setError(null);
     
     try {
-      // Call the listItem function from UserContext
-      const success = await listItem({
+      // Call the updateListedItem function from UserContext
+      const success = await updateListedItem(itemId, {
         name: itemData.name,
         type: itemData.type,
         condition: itemData.condition,
@@ -150,14 +176,14 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation, route }) => {
       });
       
       if (success) {
-        // Navigate back to home screen on success
-        navigation.navigate('Home');
+        // Navigate back to edit screen on success
+        navigation.navigate('EditListedItems', { itemId });
       } else {
-        setError('Failed to list item. Please try again.');
+        setError('Failed to update location. Please try again.');
       }
     } catch (err) {
       setError('An error occurred. Please try again.');
-      console.error('Error listing item:', err);
+      console.error('Error updating location:', err);
     } finally {
       setIsLoading(false);
     }
@@ -170,7 +196,7 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation, route }) => {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Icon name="arrow-back" size={24} color="#333" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Select Location</Text>
+        <Text style={styles.headerTitle}>Edit Location</Text>
       </View>
 
       <ScrollView 
@@ -223,6 +249,7 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation, route }) => {
                   placeholderTextColor="#666666"
                   value={location.address}
                   onChangeText={(text) => setLocation({ ...location, address: text })}
+                  color="#000000"
                 />
                 <TouchableOpacity 
                   style={styles.searchButton} 
@@ -241,14 +268,16 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation, route }) => {
             </View>
             
             {/* Item Details Section */}
-            <View style={styles.itemDetailsContainer}>
-              <Text style={styles.itemDetailsTitle}>Item Details:</Text>
-              <Text style={styles.itemDetail}>Name: {itemData.name}</Text>
-              <Text style={styles.itemDetail}>Type: {itemData.type}</Text>
-              <Text style={styles.itemDetail}>Condition: {itemData.condition}</Text>
-              <Text style={styles.itemDetail}>Dimensions: {itemData.dimensions.length} x {itemData.dimensions.width} x {itemData.dimensions.height}</Text>
-              <Text style={styles.itemDetail}>Quantity: {itemData.quantity}</Text>
-            </View>
+            {itemData && (
+              <View style={styles.itemDetailsContainer}>
+                <Text style={styles.itemDetailsTitle}>Item Details:</Text>
+                <Text style={styles.itemDetail}>Name: {itemData.name}</Text>
+                <Text style={styles.itemDetail}>Type: {itemData.type}</Text>
+                <Text style={styles.itemDetail}>Condition: {itemData.condition}</Text>
+                <Text style={styles.itemDetail}>Dimensions: {itemData.dimensions.length} x {itemData.dimensions.width} x {itemData.dimensions.height}</Text>
+                <Text style={styles.itemDetail}>Quantity: {itemData.quantity}</Text>
+              </View>
+            )}
 
             {/* Error message */}
             {error && (
@@ -260,20 +289,20 @@ const MapScreen: React.FC<MapScreenProps> = ({ navigation, route }) => {
         </TouchableWithoutFeedback>
       </ScrollView>
 
-      {/* List Item Button - Fixed at bottom */}
+      {/* Save Edit Button - Fixed at bottom */}
       <View style={[
         styles.buttonContainer,
         { bottom: keyboardVisible ? -100 : 0 } // Move button off-screen when keyboard is visible
       ]}>
         <TouchableOpacity 
-          style={styles.listButton}
-          onPress={handleListItem}
+          style={styles.saveButton}
+          onPress={handleSaveEdit}
           disabled={isLoading}
         >
           {isLoading ? (
             <ActivityIndicator color="#FFFFFF" />
           ) : (
-            <Text style={styles.listButtonText}>List Item</Text>
+            <Text style={styles.saveButtonText}>Save Edit</Text>
           )}
         </TouchableOpacity>
       </View>
@@ -361,7 +390,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 12,
     marginRight: 12,
-    color: "#000000",
     borderRadius: 6,
     backgroundColor: '#F9F9F9',
     fontSize: 14,
@@ -432,18 +460,18 @@ const styles = StyleSheet.create({
     color: '#D32F2F',
     textAlign: 'center',
   },
-  listButton: {
+  saveButton: {
     backgroundColor: '#5E4DCD',
     paddingVertical: 16,
     margin: 16,
     borderRadius: 8,
     alignItems: 'center',
   },
-  listButtonText: {
+  saveButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
   },
 });
 
-export default MapScreen; 
+export default EditLocation; 

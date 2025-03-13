@@ -54,7 +54,7 @@ const LoadingIcon: React.FC = () => {
 };
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
-  const { user, getScheduledPickups, getListedItems } = useUser();
+  const { user, getScheduledPickups, getListedItems, deleteListedItem } = useUser();
   const [scheduledPickups, setScheduledPickups] = useState<ScheduledPickup[]>([]);
   const [listedItems, setListedItems] = useState<ListedItem[]>([]);
   const [isPickupsLoading, setIsPickupsLoading] = useState(true);
@@ -104,6 +104,35 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   const handleEditItem = (itemId: string) => {
     navigation.navigate('EditListedItems', { itemId });
+  };
+
+  const handleDeleteItem = (itemId: string, itemName: string) => {
+    Alert.alert(
+      "Remove Item",
+      `Are you sure you want to remove "${itemName}" from listing?`,
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        { 
+          text: "Remove", 
+          style: "destructive",
+          onPress: async () => {
+            const success = await deleteListedItem(itemId);
+            if (success) {
+              // Refresh the list after deletion
+              loadData();
+            } else {
+              Alert.alert(
+                "Error",
+                "Unable to remove this item. It might be part of a scheduled pickup."
+              );
+            }
+          }
+        }
+      ]
+    );
   };
 
   const handleAddPickupItem = () => {
@@ -200,17 +229,32 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                           )}
                         </View>
                       </View>
-                      <TouchableOpacity 
-                        style={styles.iconButton} 
-                        onPress={() => handleEditItem(item.id)}
-                        disabled={inPickup}
-                      >
-                        <Icon 
-                          name="edit" 
-                          size={24} 
-                          color={inPickup ? "#BDBDBD" : "#666"} 
-                        />
-                      </TouchableOpacity>
+                      <View style={styles.actionButtons}>
+                        <TouchableOpacity 
+                          style={styles.iconButton} 
+                          onPress={() => handleEditItem(item.id)}
+                          disabled={inPickup}
+                        >
+                          <Icon 
+                            name="edit" 
+                            size={24} 
+                            color={inPickup ? "#BDBDBD" : "#666"} 
+                          />
+                        </TouchableOpacity>
+                        
+                        {!inPickup && (
+                          <TouchableOpacity 
+                            style={styles.deleteButton} 
+                            onPress={() => handleDeleteItem(item.id, item.name)}
+                          >
+                            <Icon 
+                              name="close" 
+                              size={24} 
+                              color="#D32F2F" 
+                            />
+                          </TouchableOpacity>
+                        )}
+                      </View>
                     </View>
                   );
                 })
@@ -331,10 +375,16 @@ const styles = StyleSheet.create({
   },
   actionButtons: {
     flexDirection: 'row',
-    gap: 16,
+    alignItems: 'center',
+    gap: 12,
   },
   iconButton: {
     padding: 4,
+  },
+  deleteButton: {
+    padding: 4,
+    backgroundColor: '#FFEBEE',
+    borderRadius: 4,
   },
   addButton: {
     backgroundColor: '#5E4DCD',

@@ -34,6 +34,7 @@ export interface ListedItem {
   };
   quantity: string;
   createdAt: Date;
+  address: string;
 }
 
 export interface User {
@@ -61,6 +62,7 @@ interface UserContextType {
   listItem: (item: Omit<ListedItem, 'id' | 'userId' | 'createdAt'>) => Promise<boolean>;
   getListedItems: () => Promise<ListedItem[]>;
   updateListedItem: (itemId: string, updatedItem: Omit<ListedItem, 'id' | 'userId' | 'createdAt'>) => Promise<boolean>;
+  deleteListedItem: (itemId: string) => Promise<boolean>;
 }
 
 /**
@@ -79,6 +81,7 @@ interface UserService {
   listItem: (userId: string, item: Omit<ListedItem, 'id' | 'userId' | 'createdAt'>) => Promise<boolean>;
   getListedItems: (userId: string) => Promise<ListedItem[]>;
   updateListedItem: (itemId: string, updatedItem: Omit<ListedItem, 'id' | 'userId' | 'createdAt'>) => Promise<boolean>;
+  deleteListedItem: (itemId: string) => Promise<boolean>;
 }
 
 /**
@@ -98,6 +101,7 @@ const mockListedItems: { [key: string]: ListedItem } = {
     dimensions: { length: '20', width: '10', height: '5' },
     quantity: '1',
     createdAt: new Date(),
+    address: 'Jalan Dato Sulaiman, Taman Century, 80250 Johor Bahru, Johor, Malaysia',
   },
   'item2': {
     id: 'item2',
@@ -108,6 +112,7 @@ const mockListedItems: { [key: string]: ListedItem } = {
     dimensions: { length: '15', width: '8', height: '5' },
     quantity: '1',
     createdAt: new Date(),
+    address: 'Jalan Tebrau, Taman Maju, 80300 Johor Bahru, Johor, Malaysia',
   },
   'item3': {
     id: 'item3',
@@ -118,6 +123,7 @@ const mockListedItems: { [key: string]: ListedItem } = {
     dimensions: { length: '18', width: '9', height: '5' },
     quantity: '2',
     createdAt: new Date(),
+    address: 'Jalan Stulang Laut, Stulang, 80300 Johor Bahru, Johor, Malaysia',
   },
   'item4': {
     id: 'item4',
@@ -128,6 +134,7 @@ const mockListedItems: { [key: string]: ListedItem } = {
     dimensions: { length: '15', width: '7', height: '4' },
     quantity: '1',
     createdAt: new Date(),
+    address: 'Jalan Tun Abdul Razak, Larkin, 80350 Johor Bahru, Johor, Malaysia',
   },
 };
 
@@ -154,7 +161,7 @@ const mockPickups: { [key: string]: ScheduledPickup } = {
 
 /**
  * MOCK SERVICE IMPLEMENTATION - REPLACE WITH REAL DATABASE IMPLEMENTATION
- * Backend team: Replace this entire mockUserService with your real implementation
+ * Backend team: Replace this entire mockUserService with your real service implementation
  * that connects to your database. The function signatures must stay the same,
  * but the implementation can change.
  */
@@ -240,6 +247,25 @@ const mockUserService: UserService = {
         ...updatedItem,
       };
       return true;
+    }
+    return false;
+  },
+  
+  deleteListedItem: async (itemId: string) => {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Check if the item exists
+    if (mockListedItems[itemId]) {
+      // Check if the item is part of any pickup
+      const isInPickup = Object.values(mockPickups).some(pickup => 
+        pickup.listedItemIds.includes(itemId)
+      );
+      
+      // Only allow deletion if the item is not in a pickup
+      if (!isInPickup) {
+        delete mockListedItems[itemId];
+        return true;
+      }
     }
     return false;
   },
@@ -352,6 +378,15 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       return false;
     }
   };
+  
+  const deleteListedItem = async (itemId: string) => {
+    try {
+      return await userService.deleteListedItem(itemId);
+    } catch (error) {
+      console.error('Delete listed item error:', error);
+      return false;
+    }
+  };
 
   return (
     <UserContext.Provider value={{ 
@@ -365,6 +400,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       listItem,
       getListedItems,
       updateListedItem,
+      deleteListedItem,
     }}>
       {children}
     </UserContext.Provider>

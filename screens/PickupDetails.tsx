@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Animated, Easing } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Animated, Easing, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useUser, ScheduledPickup, ListedItem, PickupItem } from '../contexts/UserContext';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -96,7 +96,12 @@ const PickupDetails: React.FC<PickupDetailsProps> = ({ navigation, route }) => {
           <LoadingIcon />
         </View>
       ) : pickup ? (
-        <ScrollView style={styles.content}>
+        <ScrollView 
+          style={styles.content}
+          contentContainerStyle={styles.scrollContentContainer}
+          showsVerticalScrollIndicator={true}
+          bounces={true}
+        >
           {/* Facility Name */}
           <View style={styles.facilityContainer}>
             <Text style={styles.facilityLabel}>Facility</Text>
@@ -121,11 +126,17 @@ const PickupDetails: React.FC<PickupDetailsProps> = ({ navigation, route }) => {
                     <Text style={styles.itemQuantity}>
                       Quantity: {item.quantity}
                     </Text>
+                    <Text style={styles.itemAddress}>
+                      Address: {item.address}
+                    </Text>
                   </View>
                 </View>
               );
             })}
           </View>
+          
+          {/* Add padding at the bottom for better scrolling */}
+          <View style={styles.bottomPadding} />
         </ScrollView>
       ) : (
         <View style={styles.errorContainer}>
@@ -162,7 +173,10 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+  },
+  scrollContentContainer: {
     padding: 16,
+    paddingBottom: Platform.OS === 'ios' ? 40 : 24,
   },
   facilityContainer: {
     marginBottom: 24,
@@ -217,6 +231,15 @@ const styles = StyleSheet.create({
   itemQuantity: {
     fontSize: 14,
     color: '#666',
+    marginBottom: 4,
+  },
+  itemAddress: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 4,
+  },
+  bottomPadding: {
+    height: 24,
   },
   loadingContainer: {
     flex: 1,

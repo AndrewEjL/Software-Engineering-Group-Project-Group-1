@@ -13,6 +13,7 @@ import { UserProvider } from './contexts/UserContext';
 import AddPickupItemScreen from './screens/AddPickupItemScreen';
 import MapScreen from './screens/MapScreen';
 import EditListedItems from './screens/EditListedItems';
+import EditLocation from './screens/EditLocation';
 import ClientRegistration from './screens/Login&RegistrationScreens/clientRegistration.tsx';
 import NavigationMap from './screens/GoogleMapsScreens/NavigationMap.tsx';
 import SelectLocation from './screens/GoogleMapsScreens/SelectLocation.tsx';
@@ -42,6 +43,10 @@ type RootStackParamList = {
     };
   };
   EditListedItems: { itemId: string };
+  EditLocation: { itemId: string; currentAddress: string };
+  ClientRegistration: undefined;
+  NavigationMap: undefined;
+  SelectLocation: { onLocationSelect: (location: any) => void };
 };
 
 // Type for navigation prop
@@ -94,71 +99,71 @@ const App = () => {
   return (
     <UserProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Home">
+        <Stack.Navigator 
+          initialRouteName="Login"
+          screenOptions={{
+            headerShown: false
+          }}
+        >
           <Stack.Screen
             name="Login"
             component={LoginScreen}
-            options={{ title: 'Login' ,headerShown:false}}
           />
           <Stack.Screen
             name="CreateAccount"
             component={RegisterScreen}
-            options={{ title: 'Create Account' }}
+            options={{ headerShown: true, title: 'Create Account' }}
           />
           <Stack.Screen
             name="OrganizationRegistration"
-            component={OrgRegistration }
-            options={{ title: 'Organization Registration' }}
+            component={OrgRegistration}
+            options={{ headerShown: true, title: 'Organization Registration' }}
           />
           <Stack.Screen
             name="SelectRegistrationRole"
             component={SelectRegistrationRole}
-            options={{ title: 'Select role' }}
+            options={{ headerShown: true, title: 'Select role' }}
           />
           <Stack.Screen
             name="OrgRegistrationCompleted"
             component={OrgRegistrationCompleted}
-            options={{ headerShown: false}}
           />
           <Stack.Screen
             name="Home"
             component={HomeScreen}
-            options={{ headerShown: false}}
           />
           <Stack.Screen
             name="PickupDetails"
             component={PickupDetails}
-            options={{ headerShown: false }}
           />
           <Stack.Screen
             name="AddPickupItem"
             component={AddPickupItemScreen}
-            options={{ headerShown: false }}
           />
           <Stack.Screen
             name="MapScreen"
             component={MapScreen}
-            options={{ headerShown: false }}
           />
           <Stack.Screen
             name="EditListedItems"
             component={EditListedItems}
-            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="EditLocation"
+            component={EditLocation}
           />
           <Stack.Screen
             name="ClientRegistration"
             component={ClientRegistration}
-            options={{ title: 'Client Registration'}}
+            options={{ headerShown: true, title: 'Client Registration'}}
           />
           <Stack.Screen
             name="NavigationMap"
             component={NavigationMap}
-            options={{headerShown:false}}
           />
           <Stack.Screen
             name="SelectLocation"
             component={SelectLocation}
-            options={{headerShown:false}}
           />
         </Stack.Navigator>
       </NavigationContainer>

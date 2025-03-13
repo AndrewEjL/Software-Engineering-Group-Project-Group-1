@@ -19,6 +19,7 @@ import { useUser, type ListedItem } from '../contexts/UserContext';
 type RootStackParamList = {
   Home: undefined;
   EditListedItems: { itemId: string };
+  EditLocation: { itemId: string; currentAddress: string };
 };
 
 type EditListedItemsProps = {
@@ -64,6 +65,7 @@ const EditListedItems: React.FC<EditListedItemsProps> = ({ navigation, route }) 
     height: ''
   });
   const [quantity, setQuantity] = useState('');
+  const [address, setAddress] = useState('');
 
   // Load item data when component mounts
   useEffect(() => {
@@ -84,6 +86,7 @@ const EditListedItems: React.FC<EditListedItemsProps> = ({ navigation, route }) 
         setCondition(item.condition);
         setDimensions(item.dimensions);
         setQuantity(item.quantity);
+        setAddress(item.address || '');
       } else {
         setError('Item not found');
       }
@@ -137,6 +140,10 @@ const EditListedItems: React.FC<EditListedItemsProps> = ({ navigation, route }) 
       Alert.alert('Error', 'Please enter quantity');
       return;
     }
+    if (!address) {
+      Alert.alert('Error', 'Please set a location for the item');
+      return;
+    }
 
     setIsSaving(true);
     
@@ -146,7 +153,8 @@ const EditListedItems: React.FC<EditListedItemsProps> = ({ navigation, route }) 
         type: itemType,
         condition,
         dimensions,
-        quantity
+        quantity,
+        address
       });
       
       if (success) {
@@ -330,6 +338,22 @@ const EditListedItems: React.FC<EditListedItemsProps> = ({ navigation, route }) 
           />
         </View>
 
+        {/* Location */}
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Location</Text>
+          <View style={styles.locationContainer}>
+            <Text style={styles.addressText} numberOfLines={2} ellipsizeMode="tail">
+              {address || 'No location set'}
+            </Text>
+            <TouchableOpacity 
+              style={styles.editLocationButton}
+              onPress={() => navigation.navigate('EditLocation', { itemId, currentAddress: address })}
+            >
+              <Text style={styles.editLocationButtonText}>Edit Location</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
         {/* Update Button */}
         <TouchableOpacity 
           style={styles.listButton}
@@ -473,6 +497,29 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
+  },
+  locationContainer: {
+    backgroundColor: '#F5F5F5',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 12,
+  },
+  addressText: {
+    fontSize: 14,
+    color: '#333',
+    marginBottom: 8,
+  },
+  editLocationButton: {
+    backgroundColor: '#5E4DCD',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 6,
+    alignItems: 'center',
+  },
+  editLocationButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '500',
   },
 });
 
