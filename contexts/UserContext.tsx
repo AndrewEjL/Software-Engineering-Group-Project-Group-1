@@ -54,6 +54,7 @@ interface UserContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
+  register: (name: string, email: string, password: string, phoneNumber: string) => Promise<boolean>;
   updatePoints: (points: number) => Promise<boolean>;
   getScheduledPickups: () => Promise<ScheduledPickup[]>;
   getPickupDetails: (pickupId: string) => Promise<ScheduledPickup | null>;
@@ -71,6 +72,7 @@ interface UserContextType {
 interface UserService {
   login: (email: string, password: string) => Promise<User | null>;
   logout: () => Promise<void>;
+  register: (name: string, email: string, password: string, phoneNumber: string) => Promise<boolean>;
   updatePoints: (userId: string, points: number) => Promise<boolean>;
   getScheduledPickups: (userId: string) => Promise<ScheduledPickup[]>;
   getPickupDetails: (pickupId: string) => Promise<ScheduledPickup | null>;
@@ -84,26 +86,6 @@ interface UserService {
  * This section contains mock data used for frontend development.
  * Backend team should remove this and replace with real database implementation.
  */
-const mockPickups: { [key: string]: ScheduledPickup } = {
-  'pickup1': {
-    id: 'pickup1',
-    facilityName: 'Facility A',
-    items: [
-      { id: 'item1', name: 'S24 Ultra' },
-      { id: 'item2', name: 'S24' },
-      { id: 'item3', name: 'S24 Plus' },
-    ],
-    listedItemIds: ['item1']  // Reference to the listed items
-  },
-  'pickup2': {
-    id: 'pickup2',
-    facilityName: 'Facility B',
-    items: [
-      { id: 'item4', name: 'iPhone 15' },
-    ],
-    listedItemIds: []
-  }
-};
 
 // Mock data for listed items
 const mockListedItems: { [key: string]: ListedItem } = {
@@ -117,7 +99,57 @@ const mockListedItems: { [key: string]: ListedItem } = {
     quantity: '1',
     createdAt: new Date(),
   },
-  // Add more mock items as needed
+  'item2': {
+    id: 'item2',
+    userId: '1',
+    name: 'S24',
+    type: 'Smartphone',
+    condition: 'Partially Working',
+    dimensions: { length: '15', width: '8', height: '5' },
+    quantity: '1',
+    createdAt: new Date(),
+  },
+  'item3': {
+    id: 'item3',
+    userId: '1',
+    name: 'S24 Plus',
+    type: 'Smartphone',
+    condition: 'Not Working',
+    dimensions: { length: '18', width: '9', height: '5' },
+    quantity: '2',
+    createdAt: new Date(),
+  },
+  'item4': {
+    id: 'item4',
+    userId: '1',
+    name: 'iPhone 15',
+    type: 'Smartphone',
+    condition: 'Working',
+    dimensions: { length: '15', width: '7', height: '4' },
+    quantity: '1',
+    createdAt: new Date(),
+  },
+};
+
+const mockPickups: { [key: string]: ScheduledPickup } = {
+  'pickup1': {
+    id: 'pickup1',
+    facilityName: 'Facility A',
+    items: [
+      { id: 'item1', name: 'S24 Ultra' },
+      { id: 'item2', name: 'S24' },
+      { id: 'item3', name: 'S24 Plus' },
+    ],
+    listedItemIds: ['item1', 'item2', 'item3']  // All items are listed items
+  },
+  'pickup2': {
+    id: 'pickup2',
+    facilityName: 'Facility B',
+    items: [
+      { id: 'item4', name: 'iPhone 15' },
+    ],
+    listedItemIds: ['item4']  // This item is a listed item
+  }
 };
 
 /**
@@ -147,6 +179,21 @@ const mockUserService: UserService = {
   logout: async () => {
     // Replace with real logout logic (e.g., invalidate session)
     await new Promise(resolve => setTimeout(resolve, 500));
+  },
+
+  register: async (name: string, email: string, password: string, phoneNumber: string) => {
+    // Replace with real registration logic that connects to your database
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // In a real implementation, you would:
+    // 1. Check if the email already exists
+    // 2. Hash the password
+    // 3. Create a new user record in the database
+    // 4. Return success/failure
+    
+    // For now, we'll just simulate success
+    console.log('Registered user:', { name, email, phoneNumber });
+    return true;
   },
 
   updatePoints: async (userId: string, points: number) => {
@@ -239,6 +286,15 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const register = async (name: string, email: string, password: string, phoneNumber: string) => {
+    try {
+      return await userService.register(name, email, password, phoneNumber);
+    } catch (error) {
+      console.error('Registration error:', error);
+      return false;
+    }
+  };
+
   const updatePoints = async (points: number) => {
     if (!user) return false;
     
@@ -302,6 +358,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       user, 
       login, 
       logout, 
+      register,
       updatePoints,
       getScheduledPickups,
       getPickupDetails,

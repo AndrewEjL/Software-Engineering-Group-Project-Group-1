@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, Image, Text, StyleSheet , Dimensions} from "react-native";
+import { TouchableOpacity, Image, Text, StyleSheet, Dimensions, ImageSourcePropType, StyleProp, ViewStyle, TextStyle, ImageStyle } from "react-native";
 
 const { width } = Dimensions.get("window");
 
@@ -7,7 +7,25 @@ const BUTTON_WIDTH = width * 0.4;
 const BUTTON_HEIGHT = BUTTON_WIDTH * 1.2;
 const IMAGE_SIZE = BUTTON_WIDTH * 0.6;
 
-const ImageButton = ({ imageSource, label, isSelected, onPress, buttonStyle, textStyle, imageStyle }) => {
+interface ImageButtonProps {
+  imageSource: ImageSourcePropType;
+  label: string;
+  isSelected: boolean;
+  onPress: () => void;
+  buttonStyle?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
+  imageStyle?: StyleProp<ImageStyle>;
+}
+
+const ImageButton: React.FC<ImageButtonProps> = ({ 
+  imageSource, 
+  label, 
+  isSelected, 
+  onPress, 
+  buttonStyle, 
+  textStyle, 
+  imageStyle 
+}) => {
   return (
     <TouchableOpacity
       style={[styles.button, buttonStyle, isSelected && styles.selectedButton]}
@@ -38,6 +56,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginTop: 10,
     textAlign: "center",
+    color: "#000000",
   },
   selectedLabel: {
     color: "green",

@@ -88,6 +88,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     }
   };
 
+  // Helper function to check if an item is in any scheduled pickup
+  const isItemInPickup = (itemId: string) => {
+    return scheduledPickups.some(pickup => pickup.listedItemIds.includes(itemId));
+  };
+
   const handleViewPickup = (pickupId: string) => {
     navigation.navigate('PickupDetails', { pickupId });
   };
@@ -167,22 +172,48 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 <Text style={styles.emptyText}>No items listed yet</Text>
               </View>
             ) : (
-              listedItems.map((item) => (
-                <View key={item.id} style={styles.tableRow}>
-                  <View style={styles.itemDetails}>
-                    <Text style={styles.itemText}>{item.name}</Text>
-                    <Text style={styles.itemSubtext}>
-                      {item.type} • {item.condition}
-                    </Text>
-                  </View>
-                  <TouchableOpacity 
-                    style={styles.iconButton} 
-                    onPress={() => handleEditItem(item.id)}
-                  >
-                    <Icon name="edit" size={24} color="#666" />
-                  </TouchableOpacity>
-                </View>
-              ))
+              [...listedItems]
+                .sort((a, b) => {
+                  const aInPickup = isItemInPickup(a.id);
+                  const bInPickup = isItemInPickup(b.id);
+                  if (aInPickup === bInPickup) return 0;
+                  return aInPickup ? 1 : -1; // Items not in pickup (Listing) come first
+                })
+                .map((item) => {
+                  const inPickup = isItemInPickup(item.id);
+                  return (
+                    <View key={item.id} style={styles.tableRow}>
+                      <View style={styles.itemDetails}>
+                        <Text style={styles.itemText}>{item.name}</Text>
+                        <View style={styles.itemInfo}>
+                          <Text style={styles.itemSubtext}>
+                            {item.type} • {item.condition}
+                          </Text>
+                          {inPickup ? (
+                            <Text style={styles.itemStatus}>
+                              Awaiting Pickup
+                            </Text>
+                          ) : (
+                            <Text style={styles.listingStatus}>
+                              Listing
+                            </Text>
+                          )}
+                        </View>
+                      </View>
+                      <TouchableOpacity 
+                        style={styles.iconButton} 
+                        onPress={() => handleEditItem(item.id)}
+                        disabled={inPickup}
+                      >
+                        <Icon 
+                          name="edit" 
+                          size={24} 
+                          color={inPickup ? "#BDBDBD" : "#666"} 
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  );
+                })
             )}
           </ScrollView>
         </View>
@@ -358,9 +389,32 @@ const styles = StyleSheet.create({
   itemDetails: {
     flexDirection: 'column',
   },
+  itemInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
   itemSubtext: {
     color: '#666',
     fontSize: 12,
+  },
+  itemStatus: {
+    fontSize: 12,
+    color: '#5E4DCD',
+    fontWeight: '500',
+    backgroundColor: '#F0EEFF',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  listingStatus: {
+    fontSize: 12,
+    color: '#F57C00',
+    fontWeight: '500',
+    backgroundColor: '#FFF3E0',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 4,
   },
 });
 

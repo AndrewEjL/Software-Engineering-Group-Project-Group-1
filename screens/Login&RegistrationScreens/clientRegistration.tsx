@@ -2,10 +2,12 @@ import React, { useState, useMemo } from "react";
 import { View, ScrollView, Text, StyleSheet, Dimensions, Alert } from "react-native";
 import { TextInput, Button, HelperText } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { useUser } from "../../contexts/UserContext";
 
 const { width, height } = Dimensions.get("window");
 
 const ClientRegistration = ({ navigation }) => {
+  const { register } = useUser();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,7 +16,7 @@ const ClientRegistration = ({ navigation }) => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError,setConfirmPasswordError]=useState("");
-
+  const [isLoading, setIsLoading] = useState(false);
 
 const isFormValid = useMemo(() => {
   return (
@@ -53,8 +55,23 @@ const isFormValid = useMemo(() => {
       setConfirmPasswordError("");
     }
 
-    Alert.alert("Success", "Your account has been registered, you may login now.");
-    navigation.navigate("Login");
+    setIsLoading(true);
+    try {
+      // Call the register function from UserContext
+      const success = await register(username, email, password, phoneNumber);
+      
+      if (success) {
+        Alert.alert("Success", "Your account has been registered, you may login now.");
+        navigation.navigate("Login");
+      } else {
+        Alert.alert("Error", "Registration failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      Alert.alert("Error", "An unexpected error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -136,7 +153,13 @@ const isFormValid = useMemo(() => {
         </HelperText>
       ) : null}
 
-      <Button mode="contained" onPress={handleSubmit} style={styles.nextButton} disabled={!isFormValid}>
+      <Button 
+        mode="contained" 
+        onPress={handleSubmit} 
+        style={styles.nextButton} 
+        disabled={!isFormValid || isLoading}
+        loading={isLoading}
+      >
         Submit
       </Button>
     </ScrollView>
